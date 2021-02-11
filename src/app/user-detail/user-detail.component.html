@@ -1,0 +1,13 @@
+<div *ngIf='user'>
+  <h2>{{user.name | uppercase}} details</h2>
+  <img *ngIf='user.avatar' src='http://localhost:3000/{{user.avatar}}' width="350px" height="350px">
+  <form *ngIf='!user.avatar' action="http://localhost:3000/{{user.id}}/avatar" method="post" enctype="multipart/form-data">
+    <label>Загрузите фотографию:</label><br>
+    <input type="file" name="avatar"><br><br>
+    <input type="submit" value="Send">
+  </form>
+  <div><span>id: </span>{{user.id}}</div>
+  <div><span>role: </span>{{user.role}}</div>
+  <div><span>login: </span>{{user.login}}</div>
+</div>
+<button (click)='goBack()'>Back</button>

@@ -1,0 +1,29 @@
+<div class='inputs'>
+  <div>
+    <label>Name:
+      <input #userName />
+    </label>
+  </div>
+
+  <div>
+    <label>Role:
+      <input #userRole value='user' disabled>
+    </label>
+  </div>
+
+  <div>
+    <label>Login:
+      <input #userLogin>
+    </label>
+  </div>
+
+  <div>
+    <label>Password:
+      <input #userPassword>
+    </label>
+  </div>
+  <button (click)="add(userName.value, userRole.value, userLogin.value, userPassword.value);">
+    Add
+  </button>
+</div>
+<button (click)='goBack()'>Back</button>
