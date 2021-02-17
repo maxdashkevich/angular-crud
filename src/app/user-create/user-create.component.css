@@ -1,7 +1,9 @@
 button {
   margin-top: 5px;
+  margin-left: 5px;
 }
 
-.inputs {
-  margin-top: 5px;
+input {
+  display: block;
+  margin-bottom: 10px;
 }

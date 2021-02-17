@@ -1,13 +1,28 @@
 <div *ngIf='user'>
   <h2>{{user.name | uppercase}} details</h2>
   <img *ngIf='user.avatar' src='http://localhost:3000/{{user.avatar}}' width="350px" height="350px">
-  <form *ngIf='!user.avatar' action="http://localhost:3000/{{user.id}}/avatar" method="post" enctype="multipart/form-data">
-    <label>Загрузите фотографию:</label><br>
-    <input type="file" name="avatar"><br><br>
-    <input type="submit" value="Send">
-  </form>
+  <div *ngIf='!user.avatar'>
+    <p>Upload your photo:</p>
+    <input
+    style="display: none"
+    #avatar
+    name='avatar'
+    type="file" (change)="onFileSelected($event)" >
+    <button type="button" (click)="avatar.click()">Pick File</button>
+    <button type="button" (click)="onUpload()">Upload</button>
+  </div>
+  <div [formGroup]='updateUserControl'>
+    <label>Name:
+      <input formControlName='name' [(ngModel)]="user.name">
+    </label>
+    <label>Login:
+      <input formControlName='login' [(ngModel)]='user.login'>
+    </label>
+  </div>
   <div><span>id: </span>{{user.id}}</div>
   <div><span>role: </span>{{user.role}}</div>
-  <div><span>login: </span>{{user.login}}</div>
 </div>
-<button (click)='goBack()'>Back</button>
+<button (click)="updateUser()">
+  Save changes
+</button>
+<button class='back' (click)='goBack()'>Back</button>

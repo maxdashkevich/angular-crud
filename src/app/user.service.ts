@@ -20,39 +20,30 @@ export class UserService {
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.usersUrl)
-      .pipe(
-        catchError(this.handleError<User[]>('getUsers', []))
-      );
   }
 
   getUser(id: number): Observable<User> {
     const url = `${this.usersUrl}/${id}`;
     return this.http.get<User>(url)
-      .pipe(catchError(this.handleError<User>(`getHero id=${id}`))
-      );
     }
 
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(error);
-      return of(result as T);
-    };
+  addUser(user: User): Observable<User> {
+    return this.http.post<User>(this.usersUrl, user, this.httpOptions)
   }
 
-  addUser(user: User): Observable<User> {
-    console.log(user)
-    return this.http.post<User>(this.usersUrl, user, this.httpOptions)
-      .pipe(
-        catchError(this.handleError<User>('addUser'))
-      );
+  addAvatar(filedata: FormData, id: number){
+    const avatarUrl = `${this.usersUrl}/${id}/avatar`
+    return this.http.post<File>(avatarUrl, filedata)
+  }
+
+  updateUser(id, user: User): Observable<User> {
+    return this.http.put<User>(`${this.usersUrl}/${id}`, user)
   }
 
   deleteUser(user: User | number): Observable<User> {
     const id = typeof user === 'number' ? user : user.id;
     const url = `${this.usersUrl}/${id}`;
 
-    return this.http.delete<User>(url, this.httpOptions).pipe(
-      catchError(this.handleError<User>('deleteHero'))
-    );
+    return this.http.delete<User>(url, this.httpOptions)
   }
 }

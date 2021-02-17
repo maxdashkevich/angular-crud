@@ -1,29 +1,18 @@
-<div class='inputs'>
-  <div>
+  <fieldset [formGroup]='createUserControl'>
     <label>Name:
-      <input #userName />
+      <input formControlName='name'>
     </label>
-  </div>
-
-  <div>
     <label>Role:
-      <input #userRole value='user' disabled>
+      <input formControlName='role' disabled>
     </label>
-  </div>
-
-  <div>
     <label>Login:
-      <input #userLogin>
+      <input formControlName='login'>
     </label>
-  </div>
-
-  <div>
     <label>Password:
-      <input #userPassword>
+      <input formControlName='password'>
     </label>
-  </div>
-  <button (click)="add(userName.value, userRole.value, userLogin.value, userPassword.value);">
+  </fieldset>
+  <button (click)="addUser()">
     Add
   </button>
-</div>
 <button (click)='goBack()'>Back</button>
