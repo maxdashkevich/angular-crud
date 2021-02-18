@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { User } from "../user.interface";
 import { UserService } from "../user.service";
@@ -11,24 +11,24 @@ import { UserService } from "../user.service";
 })
 export class UsersComponent implements OnInit, OnDestroy {
 
+  subscriptions: Subscription[] = [];
+  users$: Observable<User[]>;
+
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
     this.getUsers();
   }
 
-  subscriptions: Subscription[] = [];
-
-  users: User[];
-
   getUsers(): void {
-    this.subscriptions.push(this.userService.getUsers()
-      .subscribe(users => this.users = users));
+    this.users$ = this.userService.getUsers();
   }
 
   delete(user: User): void {
-    this.users = this.users.filter(h => h !== user);
-    this.subscriptions.push(this.userService.deleteUser(user).subscribe());
+    this.subscriptions.push(this.userService.deleteUser(user).subscribe(() => {
+      this.users$ = this.userService.getUsers()
+    }
+    ));
   }
 
   ngOnDestroy(): void {

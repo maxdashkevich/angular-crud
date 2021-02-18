@@ -1,5 +1,5 @@
 <div *ngIf='user'>
-  <h2>{{user.name | uppercase}} details</h2>
+  <h2 *ngIf='user.name'>{{user.name | uppercase}} details</h2>
   <img *ngIf='user.avatar' src='http://localhost:3000/{{user.avatar}}' width="350px" height="350px">
   <div *ngIf='!user.avatar'>
     <p>Upload your photo:</p>
@@ -13,10 +13,10 @@
   </div>
   <div [formGroup]='updateUserControl'>
     <label>Name:
-      <input formControlName='name' [(ngModel)]="user.name">
+      <input formControlName='name'>
     </label>
     <label>Login:
-      <input formControlName='login' [(ngModel)]='user.login'>
+      <input formControlName='login'>
     </label>
   </div>
   <div><span>id: </span>{{user.id}}</div>

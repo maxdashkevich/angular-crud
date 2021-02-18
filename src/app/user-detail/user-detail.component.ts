@@ -14,6 +14,14 @@ import { UserService } from "../user.service";
 })
 export class UserDetailComponent implements OnInit, OnDestroy {
 
+  user: User;
+
+  updateUserControl: FormGroup;
+  subscriptions: Subscription[] = [];
+  selectedFile: File = null;
+
+  private id: number;
+
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
@@ -21,53 +29,51 @@ export class UserDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.id = +this.route.snapshot.paramMap.get('id');
     this.getUser();
   }
-
-  @Input() user: User;
-
-  updateUserControl: FormGroup = new FormGroup({
-    name: new FormControl(),
-    login: new FormControl()
-  });
-
-  subscriptions: Subscription[] = [];
-
-  selectedFile: File = null;
 
   onFileSelected(event): void {
     this.selectedFile = <File>event.target.files[0];
   }
 
+  private initForm(): void {
+    this.updateUserControl = new FormGroup({
+      name: new FormControl(this.user.name),
+      login: new FormControl(this.user.login)
+  })
+  }
+
   onUpload(): void {
     const fd = new FormData();
-    const id = +this.route.snapshot.paramMap.get('id');
 
     fd.append('avatar', this.selectedFile, this.selectedFile.name);
 
-    this.subscriptions.push(this.userService.addAvatar(fd, id)
+    this.subscriptions.push(this.userService.addAvatar(fd, this.id)
       .subscribe(res => {
         alert('Photo successfully uploaded!')
       }));
   }
 
   getUser(): void {
-    const id = +this.route.snapshot.paramMap.get('id');
-    this.subscriptions.push(this.userService.getUser(id)
-      .subscribe(user => this.user = user));
+    this.subscriptions.push(this.userService.getUser(this.id)
+      .subscribe(user => {
+       this.user = user;
+       this.initForm();
+    }));
+
   }
 
-  updateUser(name: string = this.updateUserControl.controls['name'].value, login: string = this.updateUserControl.controls['login'].value): void {
-    const id = +this.route.snapshot.paramMap.get('id');
-    name = name.trim();
-    login = login.trim();
+  updateUser(): void {
+    const user: User = this.updateUserControl.value;
 
-    this.userService.updateUser(id, {name, login} as User)
-      .subscribe(user => {
+    this.subscriptions.push(
+      this.userService.updateUser(this.id, user)
+      .subscribe((user: User) => {
         this.user.name = user.name;
         this.user.login = user.login;
       })
-
+    );
   }
 
   goBack(): void {
@@ -77,6 +83,5 @@ export class UserDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(
       (subscription) => subscription.unsubscribe());
-    this.subscriptions = [];
   }
 }

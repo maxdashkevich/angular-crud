@@ -38,18 +38,18 @@ export class UserCreateComponent implements OnInit, OnDestroy {
 
   @Input() users: User[];
 
-  addUser(name: string = this.createUserControl.controls['name'].value, role: string = this.createUserControl.controls['role'].value, login: string = this.createUserControl.controls['login'].value, password: string = this.createUserControl.controls['password'].value): void {
-    name = name.trim();
-    role = role.trim();
-    login = login.trim();
-    password = password.trim();
+  addUser(): void {
+    if (!this.createUserControl.valid) {
+      return;
+    }
+    const user: User = this.createUserControl.value;
 
-    if (!name || !login || !password) { return; }
-
-    this.subscriptions.push(this.userService.addUser({name, role, login, password} as User)
-      .subscribe(user => {
-        this.users.push(user);
-      }));
+    this.subscriptions.push(
+      this.userService.addUser(user)
+        .subscribe((user: User) => {
+          this.users.push(user);
+        })
+    );
   }
 
   goBack(): void {
